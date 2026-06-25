@@ -42,7 +42,7 @@ python main.py
 
 - [x] Document ingestion pipeline (PDF → chunks → embeddings → ChromaDB)
 - [x] Vector search (ChromaDB KNN)
-- [ ] Retrieval reranking
+- [X] Retrieval reranking
 - [ ] Evaluation with golden datasets
 - [ ] LLM-as-judge for answer quality
 - [ ] Production monitoring (latency, retrieval quality, cost)
