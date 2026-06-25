@@ -7,6 +7,7 @@ Question-answering system that enables beginner investors to ask plain English q
 - **Embeddings:** nomic-embed-text (via Ollama)
 - **Vector Store:** ChromaDB
 - **PDF Parsing:** PyMuPDF
+- **Re-ranking:** Flashrank
 
 ## How to run
 
@@ -43,6 +44,6 @@ python main.py
 - [x] Document ingestion pipeline (PDF → chunks → embeddings → ChromaDB)
 - [x] Vector search (ChromaDB KNN)
 - [X] Retrieval reranking
-- [ ] Evaluation with golden datasets
+- [X] Evaluation with golden datasets
 - [ ] LLM-as-judge for answer quality
 - [ ] Production monitoring (latency, retrieval quality, cost)
