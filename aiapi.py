@@ -2,9 +2,20 @@ import requests
 from ragretrieve import retrieve
 from prodmonitoring import log_query
 import time
+from dotenv import load_dotenv
+import os
+from google import genai
+
+# Put up here to run once the file loads
+load_dotenv()
+
+print(os.getenv("GEMINI_API_KEY"))
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+
 
 def ask(question):
-
+    
     # Time logging for retrieving chunks
     start_time_chunks = time.time()
     # Retrieve the relevant chunks
@@ -26,18 +37,23 @@ def ask(question):
     # Time logging for response from LLM
     start_time_llm = time.time()
 
-    response = requests.post(
-        "http://localhost:11434/api/generate",
-        json={
-            "model": "qwen2.5:7b",
-            "prompt": prompt,
-            "stream": False
-        }
+    # response = requests.post(
+    #     "http://localhost:11434/api/generate",
+    #     json={
+    #         "model": "qwen2.5:7b",
+    #         "prompt": prompt,
+    #         "stream": False
+    #     }
+    # )
+
+    response = client.interactions.create(
+        model="gemini-2.5-flash",
+        input=prompt
     )
 
     generation_time = time.time() - start_time_llm
 
-    answer = response.json()["response"]
+    answer = response.output_text
 
     log_query(question, answer, chunks, retrieval_time, generation_time)
     return answer
