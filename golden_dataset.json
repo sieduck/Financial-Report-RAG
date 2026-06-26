@@ -18,5 +18,10 @@
     {
         "question": "What is the total current liabilities of Apple at the end of Q1 FY2026?",
         "expected": "162367"
+    },
+
+    {
+        "question": "Who is the founder of KFC?",
+        "expected": "Colonel Sanders"
     }
 ]
