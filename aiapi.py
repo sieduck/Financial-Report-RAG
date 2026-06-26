@@ -1,9 +1,15 @@
 import requests
 from ragretrieve import retrieve
+from prodmonitoring import log_query
+import time
 
 def ask(question):
+
+    # Time logging for retrieving chunks
+    start_time_chunks = time.time()
     # Retrieve the relevant chunks
     chunks = retrieve(question)
+    retrieval_time = time.time() - start_time_chunks
     context = "\n\n".join(chunks)
 
     # Prompt engineering
@@ -17,6 +23,9 @@ def ask(question):
     Answer:"""
 
     # Step 3: send to Qwen via Ollama
+    # Time logging for response from LLM
+    start_time_llm = time.time()
+
     response = requests.post(
         "http://localhost:11434/api/generate",
         json={
@@ -26,7 +35,12 @@ def ask(question):
         }
     )
 
-    return response.json()["response"]
+    generation_time = time.time() - start_time_llm
+
+    answer = response.json()["response"]
+
+    log_query(question, answer, chunks, retrieval_time, generation_time)
+    return answer
 
 # test it
 # question = "Should I invest in apple based on the financial statements?"
