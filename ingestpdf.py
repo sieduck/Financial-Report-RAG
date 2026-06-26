@@ -72,4 +72,4 @@ def create_embedding_index(pdf_path):
         )
 
 
-create_embedding_index("docs\FY26_Q1_Consolidated_Financial_Statements.pdf")
+# create_embedding_index("docs\FY26_Q1_Consolidated_Financial_Statements.pdf")

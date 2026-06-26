@@ -60,4 +60,11 @@ python evaluate.py
 - [X] Retrieval reranking
 - [X] Evaluation with golden datasets
 - [X] LLM-as-judge for answer quality
-- [ ] Production monitoring (latency, retrieval quality, cost)
+- [X] Bare-bones frontend via Streamlit
+- [ ] Hybrid retrieval (BM25 + vector search)
+- [ ] Confidence thresholds (reject low-scoring retrievals)
+- [ ] Precision@k metrics in evaluation
+- [ ] Cost analysis per query (token usage + $ estimate)
+- [ ] config.py for tweakable parameters (chunk size, top-k, model, temperature)
+- [ ] CI/CD via GitHub Actions (auto-run eval on every push)
+- [ ] Deploy to Streamlit Cloud
