@@ -52,6 +52,8 @@ python evaluate.py
 2. **ragretrieve.py** - When question is asked, most relevant chunks are found using K-NN (ChromaDB)
 3. **aiapi.py** - Retrieved chunks and questions get passed through to Qwen2.5:7b that goes ahead and generates a plain English answer
 4. **evaluate.py** - Retrieves questions and answers from golden_dataset, then asks the question to the LLM, to which we compare the answer with the expected answer through both simple keyword matching and judge-by-llm.
+5. **app.py** - Streamlit UI interface for the entire application
+6. **prodmonitoring.py** - Retrieves statistics regarding generation and saves them into 'monitor_log.json'
 
 
 ## Roadmap
@@ -63,9 +65,8 @@ python evaluate.py
 - [X] LLM-as-judge for answer quality
 - [X] Bare-bones frontend via Streamlit
 - [ ] Hybrid retrieval (BM25 + vector search)
-- [ ] Confidence thresholds (reject low-scoring retrievals)
-- [ ] Precision@k metrics in evaluation
-- [ ] Cost analysis per query (token usage + $ estimate)
+- [X] Confidence thresholds (reject low-scoring retrievals)
+- [X] Cost analysis per query (token usage)
 - [ ] config.py for tweakable parameters (chunk size, top-k, model, temperature)
 - [ ] CI/CD via GitHub Actions (auto-run eval on every push)
 - [ ] Deploy to Streamlit Cloud
