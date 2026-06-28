@@ -12,7 +12,7 @@ def embed(text):
     )
     return response.json()["embedding"]
 
-def retrieve(question, n_results=3):
+def retrieve(question, confidence_threshold=0.7, n_results=3):
     client = chromadb.PersistentClient(path="./chroma_db")
     collection = client.get_collection("financial_docs")
 
@@ -38,13 +38,21 @@ def retrieve(question, n_results=3):
     # Put those top 3 into a new list
     reranked = reranker.rerank(rerank_req)
 
+    test_conf_list = []
+
+    # Print out confidence scores
+    for r in reranked:
+        print(f"Score: {r['score']:.4f} | Text: {r['text'][:50]}")
+        test_conf_list.append({"Score": f"{r['score']:.4f}", "Text": f"{r['text'][:50]}"})
+
     # Now take the top 3 chunks from the reranked
     final_results = []
 
     for i in range(0, n_results):
-        final_results.append(reranked[i]["text"])
+        if reranked[i]["score"] >= confidence_threshold:
+            final_results.append(reranked[i]["text"])
     
-    return final_results
+    return [final_results, test_conf_list]
 
 # testing
 # question = "Should I invest in Apple?"

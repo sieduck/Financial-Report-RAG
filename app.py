@@ -19,6 +19,10 @@ if "messages" not in st.session_state:
 if "ingested_file" not in st.session_state:
     st.session_state.ingested_file = None
 
+# Init confidence threshold to default
+if "confidence_threshold" not in st.session_state:
+    st.session_state.confidence_threshold = 0.7
+
 st.caption(f"Loaded PDF: {st.session_state.ingested_file}")
 
 @st.dialog("Upload Files")
@@ -44,8 +48,15 @@ def upload_dialog():
 
 with col1:
     with st.popover("Options"):
-        st.markdown("HELLO!")
-        st.slider("Temperature")
+        st.session_state.confidence_threshold = st.slider(
+            "Confidence threshold",
+            min_value = 0.000, 
+            max_value = 1.000,
+            value = 0.750,
+            step = 0.001,
+            format="%.4f",
+            help = "Retrieved chunks minimum relevance score, if higher, chunking model must be confident that chunk contains the answer"
+        )
 
 with col2:
     if st.button("Clear files"):
@@ -70,6 +81,6 @@ if prompt := st.chat_input("Ask about the financial report..."):
 
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
-                answer = ask(prompt)
+                answer = ask(prompt, st.session_state.confidence_threshold)
             st.markdown(answer)
         st.session_state.messages.append({"role": "assistant", "content": answer})

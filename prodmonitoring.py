@@ -4,7 +4,7 @@ from datetime import datetime
 
 LOG_FILE = "monitor_log.json"
 
-def log_query(question, answer, chunks, retrieval_time, generation_time):
+def log_query(question, answer, chunks, retrieval_time, generation_time, input_tokens, output_tokens):
     json_entry = {
         "timestamp": datetime.now().isoformat(),
         "question": question,
@@ -12,7 +12,9 @@ def log_query(question, answer, chunks, retrieval_time, generation_time):
         "chunks_retrieved": chunks,
         "retrieval_time_sec": round(retrieval_time, 3),
         "generation_time_sec": round(generation_time, 3),
-        "total_time_sec": round(retrieval_time + generation_time, 3)
+        "total_time_sec": round(retrieval_time + generation_time, 3),
+        "input_tokens": input_tokens,
+        "output_tokens": output_tokens,
     }
 
     # Check if log file already exists

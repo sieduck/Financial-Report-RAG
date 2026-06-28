@@ -8,6 +8,7 @@ Question-answering system that enables beginner investors to ask plain English q
 - **Vector Store:** ChromaDB
 - **PDF Parsing:** PyMuPDF
 - **Re-ranking:** Flashrank
+- **Front-end:** Streamlit
 
 ## How to run
 

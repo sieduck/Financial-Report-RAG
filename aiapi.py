@@ -14,12 +14,19 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 
 
-def ask(question):
+def ask(question, confidence_threshold=0.7):
     
     # Time logging for retrieving chunks
     start_time_chunks = time.time()
     # Retrieve the relevant chunks
-    chunks = retrieve(question)
+    chunks_and_scores = retrieve(question, confidence_threshold=confidence_threshold)
+
+    chunks = chunks_and_scores[0]
+
+    # If due to confidence threshold can't find anything
+    if not chunks:
+        return f"Could not find relevant information in document to answer question (Confidence Threshold={confidence_threshold}). Scores of nearest relevant clusters are {chunks_and_scores[1]}"
+
     retrieval_time = time.time() - start_time_chunks
     context = "\n\n".join(chunks)
 
@@ -55,7 +62,8 @@ def ask(question):
 
     answer = response.output_text
 
-    log_query(question, answer, chunks, retrieval_time, generation_time)
+    log_query(question, answer, chunks, retrieval_time, generation_time, response.usage.total_input_tokens, 
+              response.usage.total_output_tokens)
     return answer
 
 # test it
