@@ -3,6 +3,7 @@ import tempfile
 import os
 from ingestpdf import create_embedding_index
 from aiapi import ask
+import json
 
 st.set_page_config(page_title="Financial Report RAG", page_icon="📈")
 
@@ -67,20 +68,75 @@ with col3:
     if st.button("📁 Upload Files"):
         upload_dialog()
 
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
 
-if prompt := st.chat_input("Ask about the financial report..."):
-    if not st.session_state.ingested_file:
-        st.error("Please upload a PDF first.")
-    else:
-        with st.chat_message("user"):
-            st.markdown(prompt)
-        st.session_state.messages.append({"role": "user", "content": prompt})
+chat_tab, stats_tab = st.tabs(["💬 Chat", "📊 Stats"])        
 
-        with st.chat_message("assistant"):
-            with st.spinner("Thinking..."):
-                answer = ask(prompt, st.session_state.confidence_threshold)
-            st.markdown(answer)
-        st.session_state.messages.append({"role": "assistant", "content": answer})
+with chat_tab:
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    if prompt := st.chat_input("Ask about the financial report..."):
+        if not st.session_state.ingested_file:
+            st.error("Please upload a PDF first.")
+        else:
+            with st.chat_message("user"):
+                st.markdown(prompt)
+            st.session_state.messages.append({"role": "user", "content": prompt})
+
+            with st.chat_message("assistant"):
+                with st.spinner("Thinking..."):
+                    answer = ask(prompt, st.session_state.confidence_threshold)
+                st.markdown(answer)
+            st.session_state.messages.append({"role": "assistant", "content": answer})
+
+with stats_tab:
+    st.subheader("RAG statistics")
+
+    try:
+        with open("monitor_log.json") as f:
+            logs = json.load(f)
+
+        if not logs:
+            st.info("No queries logged yet. Ask some questions first.")
+        else:
+            total_queries = len(logs)
+            avg_retrieval = sum(l["retrieval_time_sec"] for l in logs) / total_queries
+            avg_generation = sum(l["generation_time_sec"] for l in logs) / total_queries
+            avg_total = sum(l["total_time_sec"] for l in logs) / total_queries
+
+            # metrics row
+            c1, c2, c3, c4 = st.columns(4)
+            c1.metric("Total Queries", total_queries)
+            c2.metric("Avg Retrieval Time", f"{avg_retrieval:.2f}s")
+            c3.metric("Avg Generation Time", f"{avg_generation:.2f}s")
+            c4.metric("Avg Total Time", f"{avg_total:.2f}s")
+
+            # query history table
+            st.divider()
+            st.subheader("Query History")
+
+            table_data = []
+
+            for log in reversed(logs):
+                timestamp = log["timestamp"][:19]
+                question = log["question"]
+
+                # If there is a cutoff in the length of the questino
+                if len(question) > 60:
+                    question = question[:60] + "..."
+
+
+                row = {
+                    "Time": timestamp,
+                    "Question": question,
+                    "Retrieval (s)": log["retrieval_time_sec"],
+                    "Generation (s)": log["generation_time_sec"],
+                }
+
+                table_data.append(row)
+
+            st.dataframe(table_data, width="stretch")
+
+    except FileNotFoundError:
+        st.info("Empty. Please run some queries")
