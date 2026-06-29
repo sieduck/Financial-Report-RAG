@@ -67,6 +67,6 @@ python evaluate.py
 - [ ] Hybrid retrieval (BM25 + vector search)
 - [X] Confidence thresholds (reject low-scoring retrievals)
 - [X] Cost analysis per query (token usage)
-- [ ] config.py for tweakable parameters (chunk size, top-k, model, temperature)
+- [X] config.py for tweakable parameters (chunk size, top-k, model, temperature)
 - [ ] CI/CD via GitHub Actions (auto-run eval on every push)
 - [ ] Deploy to Streamlit Cloud

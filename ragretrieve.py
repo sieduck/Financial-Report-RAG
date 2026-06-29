@@ -1,18 +1,35 @@
 import chromadb
 import requests
 from flashrank import Ranker, RerankRequest
+from google import genai
+import os
+from dotenv import load_dotenv
+import json
+from config import TOP_K_RETRIEVAL, TOP_K_FINAL, CONFIDENCE_THRESHOLD, GEMINI_MODEL_EMBEDDING
+
+
+
+load_dotenv()
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
 
 # Download the reranker model
 reranker = Ranker()
 
 def embed(text):
-    response = requests.post(
-        "http://localhost:11434/api/embeddings",
-        json={"model": "nomic-embed-text", "prompt": text}
-    )
-    return response.json()["embedding"]
 
-def retrieve(question, confidence_threshold=0.7, n_results=3):
+    response = client.models.embed_content (
+        model=GEMINI_MODEL_EMBEDDING,
+        contents=text
+
+
+    )
+
+    return response.embeddings[0].values
+
+
+def retrieve(question, confidence_threshold=CONFIDENCE_THRESHOLD, top_k_retrieval=TOP_K_RETRIEVAL, 
+             top_k_final=TOP_K_FINAL):
     client = chromadb.PersistentClient(path="./chroma_db")
     collection = client.get_collection("financial_docs")
 
@@ -21,7 +38,7 @@ def retrieve(question, confidence_threshold=0.7, n_results=3):
     # Instead of 3-NN we get 10-NN first
     results = collection.query(
         query_embeddings=[question_embedding],
-        n_results=10
+        n_results=top_k_retrieval
     )
 
     # Note that passages takes in a dictionary of format "text: content"
@@ -48,7 +65,7 @@ def retrieve(question, confidence_threshold=0.7, n_results=3):
     # Now take the top 3 chunks from the reranked
     final_results = []
 
-    for i in range(0, n_results):
+    for i in range(0, top_k_final):
         if reranked[i]["score"] >= confidence_threshold:
             final_results.append(reranked[i]["text"])
     

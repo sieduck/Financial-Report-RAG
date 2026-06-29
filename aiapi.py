@@ -5,27 +5,33 @@ import time
 from dotenv import load_dotenv
 import os
 from google import genai
+from config import GEMINI_MODEL_LLM, TOP_K_RETRIEVAL, TOP_K_FINAL, CONFIDENCE_THRESHOLD
 
 # Put up here to run once the file loads
 load_dotenv()
 
-print(os.getenv("GEMINI_API_KEY"))
+# print(os.getenv("GEMINI_API_KEY"))
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 
 
-def ask(question, confidence_threshold=0.7):
+def ask(question, confidence_threshold=CONFIDENCE_THRESHOLD, top_k_retrieval=TOP_K_FINAL, top_k_final=TOP_K_FINAL,
+        gemini_model_llm=GEMINI_MODEL_LLM):
     
     # Time logging for retrieving chunks
     start_time_chunks = time.time()
     # Retrieve the relevant chunks
-    chunks_and_scores = retrieve(question, confidence_threshold=confidence_threshold)
+    chunks_and_scores = retrieve(question, confidence_threshold=confidence_threshold, top_k_retrieval=top_k_retrieval,
+                                  top_k_final=top_k_final)
 
     chunks = chunks_and_scores[0]
 
     # If due to confidence threshold can't find anything
     if not chunks:
         return f"Could not find relevant information in document to answer question (Confidence Threshold={confidence_threshold}). Scores of nearest relevant clusters are {chunks_and_scores[1]}"
+    else:
+        print(f"(Threshold={confidence_threshold}, nearest cluster scores are {chunks_and_scores[1]})")
+
 
     retrieval_time = time.time() - start_time_chunks
     context = "\n\n".join(chunks)

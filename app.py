@@ -4,6 +4,7 @@ import os
 from ingestpdf import create_embedding_index
 from aiapi import ask
 import json
+from config import GEMINI_MODEL_LLM, CHUNK_SIZE, CHUNK_OVERLAP, TOP_K_RETRIEVAL, TOP_K_FINAL, CONFIDENCE_THRESHOLD
 
 st.set_page_config(page_title="Financial Report RAG", page_icon="📈")
 
@@ -13,18 +14,28 @@ st.caption("Upload any company's financial report and ask questions in plain Eng
 col1, col2, spacer, col3 = st.columns([0.8, 0.7, 2.5, 1], gap="small")
 
 
-# Initialize chat history
+## Default inits
 if "messages" not in st.session_state:
     st.session_state.messages = []
-
 if "ingested_file" not in st.session_state:
     st.session_state.ingested_file = None
-
 # Init confidence threshold to default
 if "confidence_threshold" not in st.session_state:
     st.session_state.confidence_threshold = 0.7
+if "top_k_retrieval" not in st.session_state:
+    st.session_state.top_k_retrieval = TOP_K_RETRIEVAL
+if "top_k_final" not in st.session_state:
+    st.session_state.top_k_final = TOP_K_FINAL
+if "chunk_size" not in st.session_state:
+    st.session_state.chunk_size = CHUNK_SIZE
+if "chunk_overlap" not in st.session_state:
+    st.session_state.chunk_overlap = CHUNK_OVERLAP
+if "gemini_model" not in st.session_state:
+    st.session_state.gemini_model = GEMINI_MODEL_LLM
+if "num_chunks" not in st.session_state:
+    st.session_state.num_chunks=10
 
-st.caption(f"Loaded PDF: {st.session_state.ingested_file}")
+st.caption(f"Loaded PDF: {st.session_state.ingested_file}, Number Chunks: {st.session_state.num_chunks}")
 
 @st.dialog("Upload Files")
 def upload_dialog():
@@ -36,8 +47,10 @@ def upload_dialog():
                     tmp.write(uploaded.read())
                     tmp_path = tmp.name
                 with st.spinner("Ingesting PDF..."):
-                    create_embedding_index(tmp_path)
+                    num_chunks = create_embedding_index(tmp_path, chunk_size=st.session_state.chunk_size,
+                                           chunk_overlap=st.session_state.chunk_overlap)
                 st.session_state.ingested_file = uploaded.name
+                st.session_state.num_chunks = num_chunks
             st.rerun()
 
 
@@ -45,23 +58,75 @@ def upload_dialog():
         st.divider()
         st.success(f"{st.session_state.ingested_file} has been uploaded and is ready!")
 
-    
+reload_page = False
 
 with col1:
     with st.popover("Options"):
-        st.session_state.confidence_threshold = st.slider(
-            "Confidence threshold",
-            min_value = 0.000, 
-            max_value = 1.000,
-            value = 0.750,
-            step = 0.001,
-            format="%.4f",
-            help = "Retrieved chunks minimum relevance score, if higher, chunking model must be confident that chunk contains the answer"
-        )
+        with st.form("Configuration"):
+            confidence = st.slider(
+                "Confidence threshold",
+                min_value = 0.000, 
+                max_value = 1.000,
+                value = st.session_state.confidence_threshold,
+                step = 0.001,
+                format="%.4f",
+                help = "Retrieved chunks minimum relevance score, if higher, chunking model must be confident that chunk contains the answer"
+            )
+
+            pdf_loaded = st.session_state.ingested_file is not None
+
+            top_k_r = st.slider(
+                "Top K Retrieval", 1, st.session_state.num_chunks, disabled=not pdf_loaded
+            )
+            top_k_f = st.slider(
+                "Top K Final (after reranking)", 1, 
+                st.session_state.top_k_retrieval, disabled=not pdf_loaded  
+            )
+            chunk_size = st.slider(
+                "Chunk Size (tokens)", 100, 1000, st.session_state.chunk_size, step=50
+            )
+            chunk_overlap = st.slider(
+                "Chunk Overlap", 0, 200, st.session_state.chunk_overlap, step=10
+            )
+
+
+
+            gemini_model = st.selectbox(
+                "Gemini Model", 
+                ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"],
+                index=["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"].index(st.session_state.gemini_model)
+            )
+
+            submitted = st.form_submit_button("Apply Settings")
+
+            if submitted:
+                # Check if changed chunk settings
+                if (chunk_size != st.session_state.chunk_size) or (chunk_overlap != st.session_state.chunk_overlap):
+                    st.session_state.ingested_file = None
+                    reload_page = True
+
+                st.session_state.confidence_threshold = confidence
+                st.session_state.top_k_retrieval = top_k_r
+                st.session_state.top_k_final = top_k_f
+                st.session_state.chunk_size = chunk_size
+                st.session_state.chunk_overlap = chunk_overlap
+                st.session_state.gemini_model = gemini_model
+                
+                st.session_state.settings_changed = True
+
+
+if st.session_state.get("settings_changed") == True:
+    st.toast("Settings successfully changed")
+    st.session_state.settings_changed = False
+    if reload_page == True:
+        st.toast("Chunking settings have been changed. To apply, reupload PDF")
+
+
 
 with col2:
     if st.button("Clear files"):
         st.session_state.ingested_file = None
+        st.session_state.num_chunks = 0
         st.rerun()
 
 with col3:
@@ -86,7 +151,10 @@ with chat_tab:
 
             with st.chat_message("assistant"):
                 with st.spinner("Thinking..."):
-                    answer = ask(prompt, st.session_state.confidence_threshold)
+                    answer = ask(prompt, st.session_state.confidence_threshold, 
+                                 st.session_state.top_k_retrieval, st.session_state.top_k_final, 
+                                 st.session_state.gemini_model
+                                 )
                 st.markdown(answer)
             st.session_state.messages.append({"role": "assistant", "content": answer})
 

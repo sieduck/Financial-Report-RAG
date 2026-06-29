@@ -1,8 +1,16 @@
 import fitz
 import chromadb
 import requests
+from google import genai
+import os
+from dotenv import load_dotenv
 import json
+from config import GEMINI_MODEL_EMBEDDING, CHUNK_SIZE, CHUNK_OVERLAP
 
+
+
+load_dotenv()
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 # Loads the pdf and converts it into raw text
 def pdf_load(path):
@@ -18,7 +26,7 @@ def pdf_load(path):
 
 
 # Cleans out the \n and chunks out the text into a list of chunks of clean processed text
-def chunking_text(pages, chunk_size=500, overlap=50):
+def chunking_text(pages, chunk_size=CHUNK_SIZE, overlap=CHUNK_OVERLAP):
     chunks = []
     for page in pages:
         text = page["text"]
@@ -37,18 +45,22 @@ def chunking_text(pages, chunk_size=500, overlap=50):
 
 # Convert into embeddings (in this case using ollama but can change this section for any other model)
 def embed(text):
-    response = requests.post(
-        "http://localhost:11434/api/embeddings",
-        json={"model": "nomic-embed-text", "prompt": text}
+
+    response = client.models.embed_content (
+        model=GEMINI_MODEL_EMBEDDING,
+        contents=text
+
+
     )
-    return response.json()["embedding"]
+
+    return response.embeddings[0].values
 
 
-def create_embedding_index(pdf_path):
+def create_embedding_index(pdf_path, chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP):
     pages = pdf_load(pdf_path)
     print(f"{len(pages)} pages have been loaded\n")
 
-    chunks = chunking_text(pages)
+    chunks = chunking_text(pages, chunk_size, chunk_overlap)
     print(f"{len(chunks)} chunks have been created\n")
 
     # Storing into chroma_db
@@ -71,5 +83,7 @@ def create_embedding_index(pdf_path):
             metadatas=[{"page": chunk["page"], "source": chunk["source"]}]
         )
 
+# return the number of chunks for our opttinos
+    return len(chunks)
 
 # create_embedding_index("docs\FY26_Q1_Consolidated_Financial_Statements.pdf")
