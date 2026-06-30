@@ -1,37 +1,31 @@
 # Financial Report RAG
 
-Question-answering system that enables beginner investors to ask plain English questions about the financial statements of any company.
+**[Website deployment](https://sieduckfinancialrag.streamlit.app/)**
+
+Question-answering system that enables beginner investors to ask plain English questions about the financial statements of any company. To access, simply visit 
 
 ## Tech Stack
-- **LLM:** Qwen2.5:7b (via Ollama, runs locally)
-- **Embeddings:** nomic-embed-text (via Ollama)
+- **LLM:** gemini-2.5-flash // gemini-2.5-flash-lite
+- **Embeddings:** gemini-embedding-001 (Via Gemini API)
 - **Vector Store:** ChromaDB
 - **PDF Parsing:** PyMuPDF
 - **Re-ranking:** Flashrank
 - **Front-end:** Streamlit
 
-## How to run
+## How to run locally
 
-1. Install [Ollama](https://ollama.com) and pull models:
-```bash
-ollama pull qwen2.5:7b
-ollama pull nomic-embed-text
-```
+1. Create .env file in directory and add gemini API key
 
 2. Install dependencies:
 ```bash
-pip install chromadb pymupdf requests
+pip install -r requirements.txt
 ```
 
-3. Add a financial report PDF to the `docs/` folder, then ingest it:
+3. Run app.py
 ```bash
-python ingestpdf.py
+streamlit run app.py
 ```
-
-4. Ask questions:
-```bash
-python main.py
-```
+4. (Evaluating via golden dataset in web interface COMING SOON)
 
 5. To evalute via golden dataset, load in questions to 'golden_dataset.json' in the format:
 ```json
@@ -70,4 +64,4 @@ python evaluate.py
 - [X] Cost analysis per query (token usage)
 - [X] config.py for tweakable parameters (chunk size, top-k, model, temperature)
 - [ ] CI/CD via GitHub Actions (auto-run eval on every push)
-- [ ] Deploy to Streamlit Cloud
+- [X] Deploy to Streamlit Cloud

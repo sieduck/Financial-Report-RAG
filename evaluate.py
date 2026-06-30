@@ -1,6 +1,16 @@
 import json
 from aiapi import ask
 import requests
+from google import genai
+from config import GEMINI_MODEL_LLM
+from dotenv import load_dotenv
+import os
+
+# Put up here to run once the file loads
+load_dotenv()
+
+# print(os.getenv("GEMINI_API_KEY"))
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 def llm_as_judge(question, expected, answer):
     # Prompt engineering
@@ -17,17 +27,22 @@ def llm_as_judge(question, expected, answer):
     Ensure to only output the rating from 1-5 and nothing else."""
 
     #send to Qwen via Ollama
-    response = requests.post(
-        "http://localhost:11434/api/generate",
-        json={
-            "model": "qwen2.5:7b",
-            "prompt": prompt,
-            "stream": False
-        }
+    # response = requests.post(
+    #     "http://localhost:11434/api/generate",
+    #     json={
+    #         "model": "qwen2.5:7b",
+    #         "prompt": prompt,
+    #         "stream": False
+    #     }
+    # )
+
+    response = client.interactions.create(
+        model=GEMINI_MODEL_LLM,
+        input=prompt
     )
 
-    print(f"LLM GRADES RESPONSE AS: {response.json()["response"]}")
-    return int(response.json()["response"])
+    print(f"LLM GRADES RESPONSE AS: {response.output_text}")
+    return int(response.output_text.strip())
 
 
 
@@ -45,6 +60,9 @@ def evaluate():
     for item in dataset:
         question = item["question"]
         expected = item["expected"]
+
+
+        # Get the chunks for precision@k
 
         print(f"Question: {question}")
         answer = ask(question)
@@ -69,6 +87,7 @@ def evaluate():
 
     total_score_llm = (correct_llm / total_possible_llm_score) * 100
     print(f"LLM Eval: Score in percentage: {total_score_llm}, Raw {correct_llm}/{total_possible_llm_score}")
+
 
 
 evaluate()
