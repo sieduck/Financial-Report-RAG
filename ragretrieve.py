@@ -29,9 +29,9 @@ def embed(text):
 
 
 def retrieve(question, confidence_threshold=CONFIDENCE_THRESHOLD, top_k_retrieval=TOP_K_RETRIEVAL, 
-             top_k_final=TOP_K_FINAL):
+             top_k_final=TOP_K_FINAL, collection_name="financial_docs"):
     client = chromadb.PersistentClient(path="./chroma_db")
-    collection = client.get_collection("financial_docs")
+    collection = client.get_collection(collection_name)
 
     
     question_embedding = embed(question)

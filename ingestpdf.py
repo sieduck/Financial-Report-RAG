@@ -56,7 +56,7 @@ def embed(text):
     return response.embeddings[0].values
 
 
-def create_embedding_index(pdf_path, chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP):
+def create_embedding_index(pdf_path, chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP, collection_name="financial_docs"):
     pages = pdf_load(pdf_path)
     print(f"{len(pages)} pages have been loaded\n")
 
@@ -68,10 +68,10 @@ def create_embedding_index(pdf_path, chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_
 
     # Ensure fresh chroma_db collection every time
     try:
-        client.delete_collection("financial_docs")
+        client.delete_collection(collection_name)
     except:
         pass
-    collection = client.create_collection("financial_docs")
+    collection = client.create_collection(collection_name)
 
     for i, chunk in enumerate(chunks):
         print(f"  Embedding chunk {i+1}/{len(chunks)}...", end="\r")

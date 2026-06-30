@@ -16,13 +16,13 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 
 def ask(question, confidence_threshold=CONFIDENCE_THRESHOLD, top_k_retrieval=TOP_K_FINAL, top_k_final=TOP_K_FINAL,
-        gemini_model_llm=GEMINI_MODEL_LLM):
+        gemini_model_llm=GEMINI_MODEL_LLM, collection_name="financial_docs"):
     
     # Time logging for retrieving chunks
     start_time_chunks = time.time()
     # Retrieve the relevant chunks
     chunks_and_scores = retrieve(question, confidence_threshold=confidence_threshold, top_k_retrieval=top_k_retrieval,
-                                  top_k_final=top_k_final)
+                                  top_k_final=top_k_final, collection_name="financial_docs")
 
     chunks = chunks_and_scores[0]
 
@@ -60,7 +60,7 @@ def ask(question, confidence_threshold=CONFIDENCE_THRESHOLD, top_k_retrieval=TOP
     # )
 
     response = client.interactions.create(
-        model="gemini-2.5-flash",
+        model=gemini_model_llm,
         input=prompt
     )
 

@@ -1,5 +1,5 @@
 # Models used by the app
-GEMINI_MODEL_LLM = "gemini-2.0-flash"
+GEMINI_MODEL_LLM = "gemini-2.5-flash"
 GEMINI_MODEL_EMBEDDING = "gemini-embedding-001"
 
 

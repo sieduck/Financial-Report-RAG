@@ -109,5 +109,70 @@
   "total_time_sec": 5.804,
   "input_tokens": 635,
   "output_tokens": 80
+ },
+ {
+  "timestamp": "2026-06-30T14:10:04.524578",
+  "question": "How much does Apple make in Ipad Sales",
+  "answer": "I couldn't find that in the document.",
+  "chunks_retrieved": [
+   "Apple Inc. CONDENSED CONSOLIDATED STATEMENTS OF OPERATIONS (Unaudited) (In millions, except number of shares, which are reflected in thousands, and per-share amounts) Three Months Ended December 27, 2025 December 28, 2024 Net sales: Products $ 113,743 $ 97,960 Services 30,013 26,340 Total net sales (1) 143,756 124,300 Cost of sales: Products 67,478 59,447 Services 7,047 6,578 Total cost of sales 74,525 66,025 Gross margin 69,231 58,275 Operating expenses: Research and development 10,887 8,268 Selling, general and administrative 7,492 7,175 Total operating expenses 18,379 15,443 Operating income 50,852 42,832 Other income/(expense), net 150 (248) Income before provision for income taxes 51,002 42,584"
+  ],
+  "retrieval_time_sec": 0.678,
+  "generation_time_sec": 13.608,
+  "total_time_sec": 14.285,
+  "input_tokens": 375,
+  "output_tokens": 10
+ },
+ {
+  "timestamp": "2026-06-30T14:11:10.012107",
+  "question": "How much income did apple make in Ipad sales ",
+  "answer": "I couldn't find that in the document.",
+  "chunks_retrieved": [
+   "Apple Inc. CONDENSED CONSOLIDATED STATEMENTS OF OPERATIONS (Unaudited) (In millions, except number of shares, which are reflected in thousands, and per-share amounts) Three Months Ended December 27, 2025 December 28, 2024 Net sales: Products $ 113,743 $ 97,960 Services 30,013 26,340 Total net sales (1) 143,756 124,300 Cost of sales: Products 67,478 59,447 Services 7,047 6,578 Total cost of sales 74,525 66,025 Gross margin 69,231 58,275 Operating expenses: Research and development 10,887 8,268 Selling, general and administrative 7,492 7,175 Total operating expenses 18,379 15,443 Operating income 50,852 42,832 Other income/(expense), net 150 (248) Income before provision for income taxes 51,002 42,584"
+  ],
+  "retrieval_time_sec": 0.657,
+  "generation_time_sec": 5.048,
+  "total_time_sec": 5.705,
+  "input_tokens": 377,
+  "output_tokens": 10
+ },
+ {
+  "timestamp": "2026-06-30T14:11:25.341745",
+  "question": "How much income did apple make in ipad sales",
+  "answer": "I couldn't find that in the document.\n\nThe report shows total \"Products\" sales, but it doesn't break down sales for individual products like the iPad.",
+  "chunks_retrieved": [
+   "Apple Inc. CONDENSED CONSOLIDATED STATEMENTS OF OPERATIONS (Unaudited) (In millions, except number of shares, which are reflected in thousands, and per-share amounts) Three Months Ended December 27, 2025 December 28, 2024 Net sales: Products $ 113,743 $ 97,960 Services 30,013 26,340 Total net sales (1) 143,756 124,300 Cost of sales: Products 67,478 59,447 Services 7,047 6,578 Total cost of sales 74,525 66,025 Gross margin 69,231 58,275 Operating expenses: Research and development 10,887 8,268 Selling, general and administrative 7,492 7,175 Total operating expenses 18,379 15,443 Operating income 50,852 42,832 Other income/(expense), net 150 (248) Income before provision for income taxes 51,002 42,584"
+  ],
+  "retrieval_time_sec": 0.626,
+  "generation_time_sec": 4.413,
+  "total_time_sec": 5.039,
+  "input_tokens": 375,
+  "output_tokens": 35
+ },
+ {
+  "timestamp": "2026-06-30T14:11:57.384597",
+  "question": "As of three months ended December 27, 2025, what was the total net sales of apple",
+  "answer": "As of the three months ended December 27, 2025, Apple's total net sales were $143,756 million.\n\nIn simple terms, \"total net sales\" is the total amount of money Apple made from selling its products and services during that three-month period.",
+  "chunks_retrieved": [
+   "Apple Inc. CONDENSED CONSOLIDATED STATEMENTS OF OPERATIONS (Unaudited) (In millions, except number of shares, which are reflected in thousands, and per-share amounts) Three Months Ended December 27, 2025 December 28, 2024 Net sales: Products $ 113,743 $ 97,960 Services 30,013 26,340 Total net sales (1) 143,756 124,300 Cost of sales: Products 67,478 59,447 Services 7,047 6,578 Total cost of sales 74,525 66,025 Gross margin 69,231 58,275 Operating expenses: Research and development 10,887 8,268 Selling, general and administrative 7,492 7,175 Total operating expenses 18,379 15,443 Operating income 50,852 42,832 Other income/(expense), net 150 (248) Income before provision for income taxes 51,002 42,584"
+  ],
+  "retrieval_time_sec": 0.681,
+  "generation_time_sec": 4.837,
+  "total_time_sec": 5.518,
+  "input_tokens": 390,
+  "output_tokens": 65
+ },
+ {
+  "timestamp": "2026-06-30T14:14:39.291959",
+  "question": "How much incoem did Apple make in ipad sales",
+  "answer": "For the three months ended December 27, 2025, Apple made **$8,595 million** in iPad sales.\nFor the three months ended December 28, 2024, Apple made **$8,088 million** in iPad sales.",
+  "chunks_retrieved": [
+   "Apple Inc. CONDENSED CONSOLIDATED STATEMENTS OF OPERATIONS (Unaudited) (In millions, except number of shares, which are reflected in thousands, and per-share amounts) Three Months Ended December 27, 2025 December 28, 2024 Net sales: Products $ 113,743 $ 97,960 Services 30,013 26,340 Total net sales (1) 143,756 124,300 Cost of sales: Products 67,478 59,447 Services 7,047 6,578 Total cost of sales 74,525 66,025 Gross margin 69,231 58,275 Operating expenses: Research and development 10,887 8,268 Selling, general and administrative 7,492 7,175 Total operating expenses 18,379 15,443 Operating income 50,852 42,832 Other income/(expense), net 150 (248) Income before provision for income taxes 51,002 42,584 Provision for income taxes 8,905 6,254 Net income $ 42,097 $ 36,330 Earnings per share: Basic $ 2.85 $ 2.41 Diluted $ 2.84 $ 2.40 Shares used in computing earnings per share: Basic 14,748,158 15,081,724 Diluted 14,810,356 15,150,865 (1) Net sales by reportable segment: Americas $ 58,529 $ 52,648 Europe 38,146 33,861 Greater China 25,526 18,513 Japan 9,413 8,987 Rest of Asia Pacific 12,142 10,291 Total net sales $ 143,756 $ 124,300 (1) Net sales by category: iPhone $ 85,269 $ 69,138 Mac 8,386 8,987 iPad 8,595 8,088 Wearables, Home and Accessories 11,493 11,747 Services 30,013 26,340 Total net sales $ 143,756 $ 124,300"
+  ],
+  "retrieval_time_sec": 0.671,
+  "generation_time_sec": 3.853,
+  "total_time_sec": 4.524,
+  "input_tokens": 713,
+  "output_tokens": 63
  }
 ]

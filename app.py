@@ -5,6 +5,7 @@ from ingestpdf import create_embedding_index
 from aiapi import ask
 import json
 from config import GEMINI_MODEL_LLM, CHUNK_SIZE, CHUNK_OVERLAP, TOP_K_RETRIEVAL, TOP_K_FINAL, CONFIDENCE_THRESHOLD
+import uuid
 
 st.set_page_config(page_title="Financial Report RAG", page_icon="📈")
 
@@ -15,6 +16,11 @@ col1, col2, spacer, col3 = st.columns([0.8, 0.7, 2.5, 1], gap="small")
 
 
 ## Default inits
+if "session_id" not in st.session_state:
+    # Need completely random session id hence use uuid v4
+    st.session_state.session_id = str(uuid.uuid4())
+collection_name = f"session_{st.session_state.session_id}"
+
 if "messages" not in st.session_state:
     st.session_state.messages = []
 if "ingested_file" not in st.session_state:
@@ -48,7 +54,7 @@ def upload_dialog():
                     tmp_path = tmp.name
                 with st.spinner("Ingesting PDF..."):
                     num_chunks = create_embedding_index(tmp_path, chunk_size=st.session_state.chunk_size,
-                                           chunk_overlap=st.session_state.chunk_overlap)
+                                           chunk_overlap=st.session_state.chunk_overlap, collection_name=collection_name)
                 st.session_state.ingested_file = uploaded.name
                 st.session_state.num_chunks = num_chunks
             st.rerun()
@@ -76,11 +82,11 @@ with col1:
             pdf_loaded = st.session_state.ingested_file is not None
 
             top_k_r = st.slider(
-                "Top K Retrieval", 1, st.session_state.num_chunks, disabled=not pdf_loaded
+                "Top K Retrieval", 1, max(2, st.session_state.num_chunks), disabled=not pdf_loaded
             )
             top_k_f = st.slider(
                 "Top K Final (after reranking)", 1, 
-                st.session_state.top_k_retrieval, disabled=not pdf_loaded  
+                max(2, st.session_state.top_k_retrieval), disabled=not pdf_loaded  
             )
             chunk_size = st.slider(
                 "Chunk Size (tokens)", 100, 1000, st.session_state.chunk_size, step=50
@@ -93,8 +99,8 @@ with col1:
 
             gemini_model = st.selectbox(
                 "Gemini Model", 
-                ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"],
-                index=["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"].index(st.session_state.gemini_model)
+                ["gemini-2.5-flash", "gemini-2.5-flash-lite"],
+                index=["gemini-2.5-flash", "gemini-2.5-flash-lite"].index(st.session_state.gemini_model)
             )
 
             submitted = st.form_submit_button("Apply Settings")
@@ -153,7 +159,7 @@ with chat_tab:
                 with st.spinner("Thinking..."):
                     answer = ask(prompt, st.session_state.confidence_threshold, 
                                  st.session_state.top_k_retrieval, st.session_state.top_k_final, 
-                                 st.session_state.gemini_model
+                                 st.session_state.gemini_model, collection_name=collection_name
                                  )
                 st.markdown(answer)
             st.session_state.messages.append({"role": "assistant", "content": answer})
