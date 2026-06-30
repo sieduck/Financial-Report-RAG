@@ -1,0 +1,28 @@
+[
+ {
+  "timestamp": "2026-06-30T18:53:01.860492",
+  "question": "Is AAPL mkaing profit",
+  "answer": "I couldn't find that in the document.",
+  "chunks_retrieved": [
+   "Apple Inc. CONDENSED CONSOLIDATED BALANCE SHEETS (Unaudited) (In millions, except number of shares, which are reflected in thousands, and par value) December 27, 2025 September 27, 2025 ASSETS: Current assets: Cash and cash equivalents $ 45,317 $ 35,934 Marketable securities 21,590 18,763 Accounts receivable, net 39,921 39,777 Vendor non-trade receivables 30,399 33,180 Inventories 5,875 5,718 Other current assets 15,002 14,585 Total current assets 158,104 147,957 Non-current assets: Marketable securities 77,888 77,723 Property, plant and equipment, net 50,159 49,834 Other non-current assets 93,146 83,727 Total non-current assets 221,193 211,284 Total assets $ 379,297 $ 359,241 LIABILITIES AND SHAREHOLDERS\u2019 EQUITY: Current liabilities: Accounts payable $ 70,587 $ 69,860 Other current liabilities 68,543 66,387 Deferred revenue 9,413 9,055 Commercial paper 1,997 7,979 Term debt 11,827 12,350 Total current liabilities 162,367 165,631 Non-current liabilities: Term debt 76,685 78,328 Other non-current liabilities 52,055 41,549 Total non-current liabilities 128,740 119,877 Total liabilities 291,107 285,508 Commitments and contingencies Shareholders\u2019 equity: Common stock and additional paid-in capital, $0.00001 par value: 50,400,000 shares authorized; 14,702,703 and 14,773,260 shares issued and outstanding, respectively 95,221 93,568 Accumulated deficit (2,177) (14,264) Accumulated other comprehensive loss (4,854) (5,571) Total shareholders\u2019 equity 88,190 73,733 Total liabilities and shareholders\u2019 equity $ 379,297 $ 359,241"
+  ],
+  "retrieval_time_sec": 0.711,
+  "generation_time_sec": 11.839,
+  "total_time_sec": 12.55,
+  "input_tokens": 723,
+  "output_tokens": 10
+ },
+ {
+  "timestamp": "2026-06-30T18:54:07.353969",
+  "question": "Theyare not?",
+  "answer": "I couldn't find that in the document.",
+  "chunks_retrieved": [
+   "Apple Inc. CONDENSED CONSOLIDATED BALANCE SHEETS (Unaudited) (In millions, except number of shares, which are reflected in thousands, and par value) December 27, 2025 September 27, 2025 ASSETS: Current assets: Cash and cash equivalents $ 45,317 $ 35,934 Marketable securities 21,590 18,763 Accounts receivable, net 39,921 39,777 Vendor non-trade receivables 30,399 33,180 Inventories 5,875 5,718 Other current assets 15,002 14,585 Total current assets 158,104 147,957 Non-current assets: Marketable securities 77,888 77,723 Property, plant and equipment, net 50,159 49,834 Other non-current assets 93,146 83,727 Total non-current assets 221,193 211,284 Total assets $ 379,297 $ 359,241 LIABILITIES AND SHAREHOLDERS\u2019 EQUITY: Current liabilities: Accounts payable $ 70,587 $ 69,860 Other current liabilities 68,543 66,387 Deferred revenue 9,413 9,055 Commercial paper 1,997 7,979 Term debt 11,827 12,350 Total current liabilities 162,367 165,631 Non-current liabilities: Term debt 76,685 78,328 Other non-current liabilities 52,055 41,549 Total non-current liabilities 128,740 119,877 Total liabilities 291,107 285,508 Commitments and contingencies Shareholders\u2019 equity: Common stock and additional paid-in capital, $0.00001 par value: 50,400,000 shares authorized; 14,702,703 and 14,773,260 shares issued and outstanding, respectively 95,221 93,568 Accumulated deficit (2,177) (14,264) Accumulated other comprehensive loss (4,854) (5,571) Total shareholders\u2019 equity 88,190 73,733 Total liabilities and shareholders\u2019 equity $ 379,297 $ 359,241"
+  ],
+  "retrieval_time_sec": 0.683,
+  "generation_time_sec": 45.571,
+  "total_time_sec": 46.254,
+  "input_tokens": 720,
+  "output_tokens": 10
+ }
+]

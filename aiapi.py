@@ -16,13 +16,13 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 
 def ask(question, confidence_threshold=CONFIDENCE_THRESHOLD, top_k_retrieval=TOP_K_FINAL, top_k_final=TOP_K_FINAL,
-        gemini_model_llm=GEMINI_MODEL_LLM, collection_name="financial_docs"):
+        gemini_model_llm=GEMINI_MODEL_LLM, collection_name="financial_docs", log_name="monitor_log"):
     
     # Time logging for retrieving chunks
     start_time_chunks = time.time()
     # Retrieve the relevant chunks
     chunks_and_scores = retrieve(question, confidence_threshold=confidence_threshold, top_k_retrieval=top_k_retrieval,
-                                  top_k_final=top_k_final, collection_name="financial_docs")
+                                  top_k_final=top_k_final, collection_name=collection_name)
 
     chunks = chunks_and_scores[0]
 
@@ -69,7 +69,7 @@ def ask(question, confidence_threshold=CONFIDENCE_THRESHOLD, top_k_retrieval=TOP
     answer = response.output_text
 
     log_query(question, answer, chunks, retrieval_time, generation_time, response.usage.total_input_tokens, 
-              response.usage.total_output_tokens)
+              response.usage.total_output_tokens, log_name=log_name)
     return answer
 
 # test it

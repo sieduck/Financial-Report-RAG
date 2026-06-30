@@ -20,6 +20,7 @@ if "session_id" not in st.session_state:
     # Need completely random session id hence use uuid v4
     st.session_state.session_id = str(uuid.uuid4())
 collection_name = f"session_{st.session_state.session_id}"
+log_file = f"session_log_{st.session_state.session_id}"
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -82,17 +83,21 @@ with col1:
             pdf_loaded = st.session_state.ingested_file is not None
 
             top_k_r = st.slider(
-                "Top K Retrieval", 1, max(2, st.session_state.num_chunks), disabled=not pdf_loaded
+                "Top K Retrieval", 1, max(2, st.session_state.num_chunks), disabled=not pdf_loaded,
+                help="How many K nearest neighbour clusters to pick"
             )
             top_k_f = st.slider(
                 "Top K Final (after reranking)", 1, 
-                max(2, st.session_state.top_k_retrieval), disabled=not pdf_loaded  
+                max(2, st.session_state.top_k_retrieval), disabled=not pdf_loaded,
+                help="How many K nearest neighbour clusters to pick after reranking"
             )
             chunk_size = st.slider(
-                "Chunk Size (tokens)", 100, 1000, st.session_state.chunk_size, step=50
+                "Chunk Size (tokens)", 100, 1000, st.session_state.chunk_size, step=50,
+                help="Size of each chunk"
             )
             chunk_overlap = st.slider(
-                "Chunk Overlap", 0, 200, st.session_state.chunk_overlap, step=10
+                "Chunk Overlap", 0, 200, st.session_state.chunk_overlap, step=10,
+                help="Allowing chunks to overlap text for smoother transisionss"
             )
 
 
@@ -159,7 +164,8 @@ with chat_tab:
                 with st.spinner("Thinking..."):
                     answer = ask(prompt, st.session_state.confidence_threshold, 
                                  st.session_state.top_k_retrieval, st.session_state.top_k_final, 
-                                 st.session_state.gemini_model, collection_name=collection_name
+                                 st.session_state.gemini_model, collection_name=collection_name, 
+                                 log_name=log_file
                                  )
                 st.markdown(answer)
             st.session_state.messages.append({"role": "assistant", "content": answer})
@@ -168,7 +174,7 @@ with stats_tab:
     st.subheader("RAG statistics")
 
     try:
-        with open("monitor_log.json") as f:
+        with open(f"{log_file}.json") as f:
             logs = json.load(f)
 
         if not logs:

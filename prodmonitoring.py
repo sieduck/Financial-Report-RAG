@@ -2,9 +2,8 @@ import json
 import time
 from datetime import datetime
 
-LOG_FILE = "monitor_log.json"
 
-def log_query(question, answer, chunks, retrieval_time, generation_time, input_tokens, output_tokens):
+def log_query(question, answer, chunks, retrieval_time, generation_time, input_tokens, output_tokens, log_name="monitor_log"):
     json_entry = {
         "timestamp": datetime.now().isoformat(),
         "question": question,
@@ -19,12 +18,12 @@ def log_query(question, answer, chunks, retrieval_time, generation_time, input_t
 
     # Check if log file already exists
     try:
-        with open(LOG_FILE) as f:
+        with open(f"{log_name}.json") as f:
             log = json.load(f)
     except:
         log = []
 
     log.append(json_entry)
 
-    with open(LOG_FILE, "w") as f:
+    with open(f"{log_name}.json", "w") as f:
         json.dump(log, f, indent=1)

@@ -54,6 +54,7 @@ python evaluate.py
 4. **evaluate.py** - Retrieves questions and answers from golden_dataset, then asks the question to the LLM, to which we compare the answer with the expected answer through both simple keyword matching and judge-by-llm.
 5. **app.py** - Streamlit UI interface for the entire application
 6. **prodmonitoring.py** - Retrieves statistics regarding generation and saves them into 'monitor_log.json'
+7. **config.py** - Default settings for model
 
 
 ## Roadmap
