@@ -1,32 +1,26 @@
 [
     {
         "question": "What was Apple's total net sales for Q1 FY2026?",
-        "expected": "143756",
-        "relevant_keywords": ["net sales", "143,756", "total net sales"]
+        "expected": "143756"
     },
     {
         "question": "What was Apple's net income for the three months ended December 27 2025?",
-        "expected": "42097",
-        "relevant_keywords": ["net income", "42,097"]
+        "expected": "42097"
     },
     {
         "question": "How much cash did Apple have at the end of Q1 FY2026?",
-        "expected": "45317",
-        "relevant_keywords": ["cash and cash equivalents", "45,317"]
+        "expected": "45317"
     },
     {
         "question": "How much net sales were from iPhones at the end of Q1 FY2026",
-        "expected": "85269",
-        "relevant_keywords": ["iphone", "85,269", "net sales"]
+        "expected": "85269"
     },
     {
         "question": "What is the total current liabilities of Apple at the end of Q1 FY2026?",
-        "expected": "162367",
-        "relevant_keywords": ["current liabilities", "162,367", "total current liabilities"]
+        "expected": "162367"
     },
     {
         "question": "Who is the founder of KFC?",
-        "expected": "Colonel Sanders",
-        "relevant_keywords": ["kfc", "colonel sanders", "founder"]
+        "expected": "Colonel Sanders"
     }
 ]

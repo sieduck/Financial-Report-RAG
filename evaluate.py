@@ -2,15 +2,51 @@ import json
 from aiapi import ask
 import requests
 from google import genai
-from config import GEMINI_MODEL_LLM
+from config import GEMINI_MODEL_LLM, CONFIDENCE_THRESHOLD, TOP_K_FINAL, TOP_K_RETRIEVAL
 from dotenv import load_dotenv
 import os
+
 
 # Put up here to run once the file loads
 load_dotenv()
 
 # print(os.getenv("GEMINI_API_KEY"))
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+
+# Function to take in any golden dataset type and parse it into the JSON template
+def parse_golden_dataset(file_content, gemini_model_llm=GEMINI_MODEL_LLM):
+    prompt = f"""Extract all question and expected answer pairs from the content sent to you.
+
+    STRICT RULES:
+    - Only extract pairs EXPLICITLY stated in the contnet
+    - Do NOT generate, invent or infer any questions or answers
+    - If no clear pairs exist, return an empty array []
+
+    Ensure to use this EXACT JSON format and nothing else. 
+    [
+    {{
+        "question": "What was Apple's total net sales for Q1 FY2026?",
+        "expected": "143756"
+    }}
+    ]
+
+    Remember to start and terminate the json too. I want raw text no markdown.
+
+    Content provided: {file_content}
+    """
+
+    response = client.interactions.create(
+        model=gemini_model_llm,
+        input=prompt
+    )
+
+    print(response)
+
+    return json.loads(response.output_text.strip())
+
+
+
 
 def llm_as_judge(question, expected, answer):
     # Prompt engineering
@@ -46,48 +82,54 @@ def llm_as_judge(question, expected, answer):
 
 
 
-def evaluate():
-    with open("golden_dataset.json") as f:
-        dataset = json.load(f)
+def evaluate(golden_dataset, confidence_threshold=CONFIDENCE_THRESHOLD, top_k_retrieval=TOP_K_RETRIEVAL, top_k_final=TOP_K_FINAL,
+        gemini_model_llm=GEMINI_MODEL_LLM, collection_name="financial_docs", log_name="monitor_log"):
+    
 
-    # Scores how many correct by just looking for the word in the response
-    correct = 0
-
-    # Scores how many correct for llm-by-judge
-    correct_llm = 0
+    results = []
+    total_score = 0
 
     # Note dataset JSON has question expected for each row
-    for item in dataset:
+    for item in golden_dataset:
         question = item["question"]
         expected = item["expected"]
+
+        score = 0
+
 
 
         # Get the chunks for precision@k
 
         print(f"Question: {question}")
-        answer = ask(question)
+        answer = ask(question, confidence_threshold, top_k_retrieval, top_k_final, gemini_model_llm, 
+                     collection_name=collection_name, log_name=log_name)
         print(f"Answer: {answer}")
 
-        # process them to get rid of dollar signs and commas to match answer
-        processed_answer = answer.lower()
-
-        if expected in answer.replace(",", "").replace("$",""):
-            print(f"Expected: {expected}, FOUND IN ANSWER")
-            correct += 1
-            
         
-        correct_llm += llm_as_judge(question, expected, answer)
+        score += llm_as_judge(question, expected, answer)
+        total_score += score
 
 
-    total_score = (correct / len(dataset)) * 100
-    print(f"Simple Eval: Score in percentage: {total_score}, Raw {correct}/{len(dataset)}\n")
-
-    possible_levels = 5
-    total_possible_llm_score = len(dataset) * possible_levels
-
-    total_score_llm = (correct_llm / total_possible_llm_score) * 100
-    print(f"LLM Eval: Score in percentage: {total_score_llm}, Raw {correct_llm}/{total_possible_llm_score}")
-
+        # Each instance of the test
+        results.append({
+            "question": question,
+            "expected": expected,
+            "answer": answer,
+            "score": score
+        })
 
 
-evaluate()
+
+    average_score = total_score / len(golden_dataset)
+    
+    # Return entire thing as dictionary to make it easier
+    return {
+        "results": results,
+        "average_score": average_score,
+        "total_questions": len(golden_dataset),
+        "total_score": total_score
+
+    }
+
+
+

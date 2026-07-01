@@ -6,6 +6,7 @@ from aiapi import ask
 import json
 from config import GEMINI_MODEL_LLM, CHUNK_SIZE, CHUNK_OVERLAP, TOP_K_RETRIEVAL, TOP_K_FINAL, CONFIDENCE_THRESHOLD
 import uuid
+from evaluate import parse_golden_dataset, evaluate
 
 st.set_page_config(page_title="Financial Report RAG", page_icon="📈")
 
@@ -145,7 +146,7 @@ with col3:
         upload_dialog()
 
 
-chat_tab, stats_tab = st.tabs(["💬 Chat", "📊 Stats"])        
+chat_tab, stats_tab, evaluation_tab = st.tabs(["💬 Chat", "📊 Stats", "Evaluation"])        
 
 with chat_tab:
     for message in st.session_state.messages:
@@ -217,6 +218,51 @@ with stats_tab:
                 table_data.append(row)
 
             st.dataframe(table_data, width="stretch")
-
     except FileNotFoundError:
         st.info("Empty. Please run some queries")
+
+with evaluation_tab:
+    st.subheader("Evaluation")
+    st.caption("Upload golden dataset in any format to evaluate the RAG system")
+
+
+    if not st.session_state.ingested_file:
+        st.warning("Please upload PDF via 📁 Upload Files")
+    else: 
+        file_content = st.file_uploader("Upload Golden Dataset", type=["json", "csv", "txt"])
+
+        if file_content:
+            content = file_content.read().decode("utf-8")
+            st.success(f"Loaded: {file_content.name}")
+
+            if st.button("Run Evaluation Via Golden Dataset"):
+                with st.spinner("Converting dataset into json format via Gemini"):
+                    try:
+                        golden_dataset = parse_golden_dataset(content)
+                        st.info(f"Found {len(golden_dataset)} question answer pairs")
+
+                    except Exception as e:
+                        st.error(f"Error: {e}. Failed to parse dataset")
+                        golden_dataset = []
+                
+                if golden_dataset:
+                    with st.spinner(f"Evaluating {len(golden_dataset)} questions"):
+                        results = evaluate(
+                            golden_dataset, confidence_threshold=st.session_state.confidence_threshold,
+                            top_k_retrieval=st.session_state.top_k_retrieval, top_k_final=st.session_state.top_k_final,
+                            gemini_model_llm=st.session_state.gemini_model, collection_name=collection_name,
+                            log_name=log_file
+                        )
+                    
+                    c1, c2, c3 = st.columns(3)
+                    c1.metric("Number questions evaluated", results["total_questions"])
+                    c2.metric("Average score", results["average_score"])
+                    c3.metric("Overall Accuracy", (results["average_score"] / 5) * 100)
+
+                    st.divider()
+                    st.subheader("Per question results")
+                    st.dataframe(results["results"])
+
+
+
+
