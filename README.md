@@ -38,7 +38,7 @@ streamlit run app.py
 
 
 ## Roadmap
-
+### Phase One
 - [x] Document ingestion pipeline (PDF → chunks → embeddings → ChromaDB)
 - [x] Vector search (ChromaDB KNN)
 - [X] Retrieval reranking
@@ -49,3 +49,8 @@ streamlit run app.py
 - [X] Cost analysis per query (token usage)
 - [X] config.py for tweakable parameters (chunk size, top-k, model, temperature)
 - [X] Deploy to Streamlit Cloud
+
+### Phase Two
+- [ ] Incorporate demonstration screenshots
+- [ ] Seamless switching betwen Gemini and local Ollama LLM for local testing
+- [ ] Evaluation of a practical dataset to test retrieval accuracy
