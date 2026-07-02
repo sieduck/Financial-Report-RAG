@@ -146,7 +146,7 @@ with col3:
         upload_dialog()
 
 
-chat_tab, stats_tab, evaluation_tab = st.tabs(["💬 Chat", "📊 Stats", "Evaluation"])        
+chat_tab, stats_tab, evaluation_tab = st.tabs(["💬 Chat", "📊 Stats", "🤔 Evaluation"])        
 
 with chat_tab:
     for message in st.session_state.messages:
@@ -223,7 +223,7 @@ with stats_tab:
 
 with evaluation_tab:
     st.subheader("Evaluation")
-    st.caption("Upload golden dataset in any format to evaluate the RAG system")
+    st.caption("Upload golden dataset in any format to evaluate the RAG system. Golden dataset can be of any question answer format.")
 
 
     if not st.session_state.ingested_file:
@@ -256,8 +256,8 @@ with evaluation_tab:
                     
                     c1, c2, c3 = st.columns(3)
                     c1.metric("Number questions evaluated", results["total_questions"])
-                    c2.metric("Average score", results["average_score"])
-                    c3.metric("Overall Accuracy", (results["average_score"] / 5) * 100)
+                    c2.metric("Average score", f"{results["average_score"]:.2f}/5")
+                    c3.metric("Overall Accuracy", f"{(results["average_score"] / 5) * 100:.2f}%")
 
                     st.divider()
                     st.subheader("Per question results")

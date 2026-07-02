@@ -25,27 +25,13 @@ pip install -r requirements.txt
 ```bash
 streamlit run app.py
 ```
-4. (Evaluating via golden dataset in web interface COMING SOON)
-
-5. To evalute via golden dataset, load in questions to 'golden_dataset.json' in the format:
-```json
-{ 
-    "question": "Who is the founder of KFC?",
-    "expected": "Colonel Sanders"
-}
-```
-
-and then simply run:
-```bash
-python evaluate.py
-```
 
 ## Workings of each py file
 
-1. **ingestpdf.py** - Load the PDFs, split them into chunks and embed using 'nomic-embed-text' via Ollama
+1. **ingestpdf.py** - Load the PDFs, split them into chunks and embed using 'gemini-embedding-001'
 2. **ragretrieve.py** - When question is asked, most relevant chunks are found using K-NN (ChromaDB)
-3. **aiapi.py** - Retrieved chunks and questions get passed through to Qwen2.5:7b that goes ahead and generates a plain English answer
-4. **evaluate.py** - Retrieves questions and answers from golden_dataset, then asks the question to the LLM, to which we compare the answer with the expected answer through both simple keyword matching and judge-by-llm.
+3. **aiapi.py** - Retrieved chunks and questions get passed through to Gemini that goes ahead and generates a plain English answer
+4. **evaluate.py** - Retrieves questions and answers from golden_dataset, then asks the question to the LLM, to which we compare the answer with the expected answer through judge-by-llm.
 5. **app.py** - Streamlit UI interface for the entire application
 6. **prodmonitoring.py** - Retrieves statistics regarding generation and saves them into 'monitor_log.json'
 7. **config.py** - Default settings for model
@@ -59,9 +45,7 @@ python evaluate.py
 - [X] Evaluation with golden datasets
 - [X] LLM-as-judge for answer quality
 - [X] Bare-bones frontend via Streamlit
-- [ ] Hybrid retrieval (BM25 + vector search)
 - [X] Confidence thresholds (reject low-scoring retrievals)
 - [X] Cost analysis per query (token usage)
 - [X] config.py for tweakable parameters (chunk size, top-k, model, temperature)
-- [ ] CI/CD via GitHub Actions (auto-run eval on every push)
 - [X] Deploy to Streamlit Cloud
